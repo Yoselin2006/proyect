@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{url_for('static',filename='/css/all.min.css')}}">
 </head>
 <body>
-  {% block contenido en español %}
+  {% block contenido %}
   
      <div id="carouselExampleFade" class="carousel slide carousel-fade">
         <div class="carousel-inner">
@@ -19,7 +19,7 @@
             <img src="{{url_for('static',filename='/img/vestido de novia.jpg')}}" class="d-block w-100" alt="...">
           </div>
           <div class="carousel-item">
-            <img src="" class="d-block w-100" alt="...">
+            <img src="{{url_for('static',filename='/img/vestidaso.jpg')}}" class="d-block w-100" alt="...">
           </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
@@ -68,3 +68,7 @@
   </symbol>
 </svg>
 </html>
+
+<script src="{{url_for/js/bootstrap.bundle.min.js}}"></script>
+<script src="/static/js/all.min.js"></script>
+<script src="/static/js/scrollreveal"></script>
