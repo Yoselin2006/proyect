@@ -1,7 +1,8 @@
 from flask import Flask,render_template,url_for,request,redirect
 from flask_mysqldb import MySQL 
 from werkzeug.security import generate_password_hash
-from datetime import datetime
+import datetime
+from config import config
 hope = Flask(__name__)
 db   = MySQL(hope)
 
@@ -13,15 +14,20 @@ def home():
         clave = request.form['clave']
         clavecifrada = generate_password_hash(clave)
         fechareg = datetime.now()
+        regUsuario = db.connection.cursor()
+        regUsuario.execute("INSERT INTO usuario (nombre,correo,clave,fechareg) VALUES (% ,% ,% ,%)",(nombre.upper, correo, clavecifrada, fechareg))
+        db.connection.comint()
 
-    return render_template('home.html')
-@hope.route('/signup')
-def signup(): 
-    return render_template('signup.html')
+        return render_template(home.html)
+    else:
+        return render_template('signup.html')
+    
 @hope.route('/signin')
-def signin(): 
-    return render_template('signin.html')
+def signin():
+    return render_template('/signin.html')
 
 
-if __name__ == "_main_":
+if __name__ == "__main__":
+    hope.config.from_object(config['development'])
     hope.run(debug=True,port=3300) 
+
