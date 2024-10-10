@@ -61,4 +61,9 @@
 <link rel="stylesheet" href="/css/all.min.css">
 <i class="fa-solid fa-futbol fa-beat"></i>
 Vestidos HOPE
+{% with messages = get_flashed_messages()%}
+{% if mensajes %}
+{% for a in mensajes}
+{% endfor %}
+{% endif %}
 {% endblock %}

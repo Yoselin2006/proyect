@@ -1,4 +1,4 @@
-from flask import Flask,render_template,url_for,request,redirect
+from flask import Flask,flash,render_template,url_for,request,redirect
 from flask_mysqldb import MySQL 
 from werkzeug.security import generate_password_hash
 import datetime
@@ -17,14 +17,18 @@ def home():
         regUsuario = db.connection.cursor()
         regUsuario.execute("INSERT INTO usuario (nombre,correo,clave,fechareg) VALUES (% ,% ,% ,%)",(nombre.upper, correo, clavecifrada, fechareg))
         db.connection.comint()
+        return redirect(url_for('sUsuario'))
 
         return render_template(home.html)
     else:
         return render_template('signup.html')
+@hope.router('/iUsuario')
     
 @hope.route('/signin')
 def signin():
     return render_template('/signin.html')
+
+
 
 
 if __name__ == "__main__":
