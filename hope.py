@@ -18,6 +18,14 @@ def home():
         regUsuario.execute("INSERT INTO usuario (nombre,correo,clave,fechareg) VALUES (% ,% ,% ,%)",(nombre.upper, correo, clavecifrada, fechareg))
         db.connection.comint()
         return redirect(url_for('sUsuario'))
+@hope.router('/uUsuario', methods=('GET', 'POST'))
+def uUsuario(id):
+        nombre=request.form['nombre']
+        correo=request.form['correo']
+        perfil=request.form['perfil']
+        actuUsuario = db.connection.cursor()
+        actuUsuario.execute("UPDATE usuario SET nombre=%s, correo=%s, perfil=%s WERE id=%s",())
+
 
         return render_template(home.html)
     else:
