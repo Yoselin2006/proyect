@@ -26,15 +26,27 @@ def uUsuario(id):
         actuUsuario = db.connection.cursor()
         actuUsuario.execute("UPDATE usuario SET nombre=%s, correo=%s, perfil=%s WERE id=%s",())
 
-
-        return render_template(home.html)
-    else:
-        return render_template('signup.html')
-@hope.router('/iUsuario')
-    
-@hope.route('/signin')
+def signup()
+        if request.form == 'POST':
+              Usuario = user (0, None,request.form['correo'],request.form['clave'],None, None)
+              UsuarioAutomatico = ModelUser.signin(db,usuario)
+        if UsuarioAutomatico is not None:
+              if UsuarioAutomatico.clave:
+                    login_user(UsuarioAutomatico)
+                    if UsuarioAutomatico.pefil == 'A':
+                           return render_template('admin.html')
+                    else:
+                           return render_template('user.html')
+              else:
+                    return 'contraseña incorrecta'
+        else:
+              return 'usuario inexsistente'
+else:
+        return render_template('/signup.html')
+@hope.router('/signoup, metods='['GET' , 'POST'])
 def signin():
-    return render_template('/signin.html')
+      logout_user()
+      return render_template('signin.html')
 
 
 
