@@ -1,11 +1,12 @@
 from flask import Flask,flash,render_template,url_for,request,redirect
 from flask_mysqldb import MySQL 
+from flask_login import LoginManager, login_user, logout_user
 from werkzeug.security import generate_password_hash
 import datetime
 from config import config
+
 hope = Flask(__name__)
 db   = MySQL(hope)
-
 @hope.route('/')
 def home(): 
     if request.method == 'POST':
