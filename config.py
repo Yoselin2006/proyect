@@ -1,15 +1,15 @@
 class config:
-    SECRET_KEY = 'NUNUNUNUNUNNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNnunununununununununununnuunuunununun'
+    SECRET_KEY = 'NUNUNUNUNUNNUNUNUNUNUNUNUNUNUNUNUNUNU'
     BEDUG      = True
 
 
-    class DevelopmentConfig(Config):
+class DevelopmentConfig(Config):
         MYSQL_HOST = 'localhost'
         MYSQL_USER = 'root'
         MYSQL_PASSWORD= 'mysql'
         MYSQL_DB = 'hope'
 
-        config = {
-            'development' : DevelopmentConfig
+config = {
+    'development': DevelopmentConfig
         }
         

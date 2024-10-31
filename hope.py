@@ -26,30 +26,29 @@ def uUsuario(id):
         perfil=request.form['perfil']
         actuUsuario = db.connection.cursor()
         actuUsuario.execute("UPDATE usuario SET nombre=%s, correo=%s, perfil=%s WERE id=%s",())
+@hope.router('/signup')
+def signup():
+      if request.form == 'POST':
+      Usuario = user (0, None,request.form['correo'],request.form['clave'],None, None)
+      UsuarioAutomatico = ModelUser.signin(db,usuario)
+      if UsuarioAutomatico is not None:
+      if UsuarioAutomatico.clave:
+      login_user(UsuarioAutomatico)
+      if UsuarioAutomatico.pefil == 'A':
+      return render_template('admin.html')
+      else:
+      return render_template('user.html')
+      else:
+      return 'contraseña incorrecta'
+      else:
+      return 'usuario inexsistente'
+      else:
+      return render_template('/signup.html')
 
-def signup()
-        if request.form == 'POST':
-              Usuario = user (0, None,request.form['correo'],request.form['clave'],None, None)
-              UsuarioAutomatico = ModelUser.signin(db,usuario)
-        if UsuarioAutomatico is not None:
-              if UsuarioAutomatico.clave:
-                    login_user(UsuarioAutomatico)
-                    if UsuarioAutomatico.pefil == 'A':
-                           return render_template('admin.html')
-                    else:
-                           return render_template('user.html')
-              else:
-                    return 'contraseña incorrecta'
-        else:
-              return 'usuario inexsistente'
-else:
-        return render_template('/signup.html')
 @hope.router('/signoup, metods='['GET' , 'POST'])
 def signin():
       logout_user()
       return render_template('signin.html')
-
-
 
 
 if __name__ == "__main__":
