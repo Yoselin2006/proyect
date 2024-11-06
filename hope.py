@@ -1,4 +1,4 @@
-from flask import Flask,flash,render_template,url_for,request,redirect
+from flask import Flask,flash,render_template,url_for,request,redirect, session
 from flask_mysqldb import MySQL 
 from flask_login import LoginManager, login_user, logout_user
 from werkzeug.security import generate_password_hash
@@ -34,6 +34,8 @@ def signup():
       if UsuarioAutomatico is not None:
       if UsuarioAutomatico.clave:
       login_user(UsuarioAutomatico)
+      session["nombreU"]= UsuarioAutomatico.nombre
+      session["perfilU"] = UsuarioAutomatico.perfil
       if UsuarioAutomatico.pefil == 'A':
       return render_template('admin.html')
       else:
@@ -44,6 +46,16 @@ def signup():
       return 'usuario inexsistente'
       else:
       return render_template('/signup.html')
+@hope.route('/sproducto', metods=['GET' , 'POST'])
+def producto():
+     selproducto = db.connection.cursor()
+     selproducto = execute("SELECT = FROM producto")
+     prod = selproducto.fetchall
+     selproducto.close()
+     if session['perfilU'] == 'A'a
+          return render_template('producto.html', producto.prod)
+     else:
+          return render_template('user.html', producto.prod)
 
 @hope.router('/signoup, metods='['GET' , 'POST'])
 def signin():
