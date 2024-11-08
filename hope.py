@@ -8,28 +8,28 @@ from config import config
 hope = Flask(__name__)
 db   = MySQL(hope)
 @hope.route('/')
-def home(): 
-    if request.method == 'POST':
-        nombre = request.form['nombre']
-        correo = request.form['correo']
-        clave = request.form['clave']
-        clavecifrada = generate_password_hash(clave)
-        fechareg = datetime.now()
-        regUsuario = db.connection.cursor()
-        regUsuario.execute("INSERT INTO usuario (nombre,correo,clave,fechareg) VALUES (% ,% ,% ,%)",(nombre.upper, correo, clavecifrada, fechareg))
-        db.connection.comint()
-        return redirect(url_for('sUsuario'))
-@hope.router('/uUsuario', methods=('GET', 'POST'))
-def uUsuario(id):
-        nombre=request.form['nombre']
-        correo=request.form['correo']
-        perfil=request.form['perfil']
-        actuUsuario = db.connection.cursor()
-        actuUsuario.execute("UPDATE usuario SET nombre=%s, correo=%s, perfil=%s WERE id=%s",())
-@hope.router('/signup')
+def home():
+      return render_template('home.html')
+
+@hope.route('/signup', methods =['GET','POST'])
+def signup():
+if request.method == 'POST':
+      nombre = request.form['nombre']
+      correo = request.form['correo']
+      clave = request.form['clave']
+      clavecifrada = generate_password_hash(clave)
+      fechareg = datetime.datetime.now()
+      regUsuario = db.connection.cursor()
+      regUsuario.execute("INSERT INTO usuario (nombre,correo,clave,fechareg,perfil) VALUES (% ,% ,% ,% ,%)",(nombre.upper, correo, clavecifrada, fechareg, 'U'))
+      db.connection.comint()
+      return render_template('home.html')
+else:
+      return render_template('signup.html')
+
+@hope.route('/signin', methods=['GET','POST'])
 def signup():
       if request.form == 'POST':
-      Usuario = user (0, None,request.form['correo'],request.form['clave'],None, None)
+      Usuario = User (0, None,request.form['correo'],request.form['clave'],None, None)
       UsuarioAutomatico = ModelUser.signin(db,usuario)
       if UsuarioAutomatico is not None:
       if UsuarioAutomatico.clave:
@@ -46,16 +46,25 @@ def signup():
       return 'usuario inexsistente'
       else:
       return render_template('/signup.html')
+
+@hope.router('/uUsuario', methods=('GET', 'POST'))
+def uUsuario(id):
+      nombre=request.form['nombre']
+      correo=request.form['correo']
+      perfil=request.form['perfil']
+      actuUsuario = db.connection.cursor()
+      actuUsuario.execute("UPDATE usuario SET nombre=%s, correo=%s, perfil=%s WERE id=%s",())
+
 @hope.route('/sproducto', metods=['GET' , 'POST'])
 def producto():
-     selproducto = db.connection.cursor()
-     selproducto = execute("SELECT = FROM producto")
-     prod = selproducto.fetchall
-     selproducto.close()
-     if session['perfilU'] == 'A'a
-          return render_template('producto.html', producto.prod)
-     else:
-          return render_template('user.html', producto.prod)
+selproducto = db.connection.cursor()
+selproducto = execute("SELECT = FROM producto")
+prod = selproducto.fetchall
+selproducto.close()
+if session['perfilU'] == 'A'a
+      return render_template('producto.html', producto.prod)
+else:
+      return render_template('user.html', producto.prod)
 
 @hope.router('/signoup, metods='['GET' , 'POST'])
 def signin():
@@ -64,6 +73,6 @@ def signin():
 
 
 if __name__ == "__main__":
-    hope.config.from_object(config['development'])
-    hope.run(debug=True,port=3300) 
+hope.config.from_object(config['development'])
+hope.run(debug=True,port=3300) 
 
