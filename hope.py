@@ -7,6 +7,9 @@ from config import config
 
 hope = Flask(__name__)
 db   = MySQL(hope)
+pythonanywhere
+hope.config.from_object(config['development'])
+hope.run(debug=True,port=3300)
 @hope.route('/')
 def home():
       return render_template('home.html')
@@ -72,7 +75,7 @@ def signin():
       return render_template('signin.html')
 
 
-if __name__ == "__main__":
+'''if __name__ == "__main__":
 hope.config.from_object(config['development'])
-hope.run(debug=True,port=3300) 
+hope.run(debug=True,port=3300)'''
 
