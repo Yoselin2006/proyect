@@ -1,15 +1,17 @@
 from flask import Flask,flash,render_template,url_for,request,redirect, session
 from flask_mysqldb import MySQL 
 from flask_login import LoginManager, login_user, logout_user
+from flask_mail import Mail, 
 from werkzeug.security import generate_password_hash
 import datetime
 from config import config
 
 hope = Flask(__name__)
 db   = MySQL(hope)
+
 pythonanywhere
 hope.config.from_object(config['development'])
-hope.run(debug=True,port=3300)
+
 @hope.route('/')
 def home():
       return render_template('home.html')
@@ -25,6 +27,9 @@ if request.method == 'POST':
       regUsuario = db.connection.cursor()
       regUsuario.execute("INSERT INTO usuario (nombre,correo,clave,fechareg,perfil) VALUES (% ,% ,% ,% ,%)",(nombre.upper, correo, clavecifrada, fechareg, 'U'))
       db.connection.comint()
+      mensaje = Message(subject = 'Bienvenido a hope',recitients = [correo]) 
+      mensaje.html = render_template('mail.html', nombre = nombre)
+      mail.send(mensaje)
       return render_template('home.html')
 else:
       return render_template('signup.html')
