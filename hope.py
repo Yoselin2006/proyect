@@ -32,76 +32,111 @@ def admin():
 @hope.route('/user')
 def user():
       return redirect(url_for('sProducto'))
-
-@hope.route('/signup',methods=['GET','POST'])
-def signup():
-      if request.method =='POST':
-            nombre = request.form['nombre']
-            correo = request.form['correo']
-            clave  = request.form['clave']
-            clavecifrada = generate_password_hash(clave)
-            fechareg = datetime.datetime.now()
-            UpUsuario = db.connection.cursor()
-            UpUsuario.execute("INSERT INTO usuario (nombre,correo,clave,fechareg,perfil) VALUES (% ,% ,% ,% ,%)",(nombre.upper, correo, clavecifrada, fechareg, 'U'))
-            db.connection.commit()
-            mensaje = Message(subject = 'Bienvenido a hope',recitients = [correo]) 
-            mensaje.html = render_template('mail.html', nombre = nombre)
-            mail.send(mensaje)
-            return render_template('home.html')
-      else:
-            return render_template('signup.html')
-
-@hope.route('/signin', methods=['GET','POST'])
-def signup():
-      if request.form == 'POST':
-            Usuario = User (0, None,request.form['correo'],request.form['clave'],None, None)
-            UsuarioAutomatico = ModelUser.signin(db,usuario)
-      if UsuarioAutomatico is not None:
-            if UsuarioAutomatico.clave:
-                  login_user(UsuarioAutomatico)
-      session["nombreU"]= UsuarioAutomatico.nombre
-      session["perfilU"] = UsuarioAutomatico.perfil
-      if UsuarioAutomatico.pefil == 'A':
-            else:
-      selArt = db.connection.cursor()
-      selArt.execute("SELECT SUM(cantidad) AS TotalA FROM carrito WHERE idcliente = %s AND idventa IS NULL", ([usuarioAut.id],))
-      a = selArt.fetchone()
-      session['carrito'] = int (a[0] or 0)
-      selCarrito = db.connection.cursor()
-      selCarrito.execute("SELECT * FROM  carrito")
-      p = selCarrito.fetchall()
-      return render_template('user.html', Productos = p, TotalA = a )
-      else:
-      flash('Contraseña incorrecta')
-      return redirect(request.url)
-      else:
-      flash('Usuario no encontrado')
-      return redirect(request.url)
-      return render_template('/signup.html')
-
-@hope.router('/signoup, metods='['GET' , 'POST'])
+@hope.route('/signin', methods=['GET', 'POST'])
 def signin():
-      logout_user()
-      return render_template('signin.html')
+    if request.method == 'POST':
+        # Crear el objeto Usuario con los datos del formulario
+        Usuario = User(0, None, request.form['correo'], request.form['clave'], None, None)
+        
+        # Intentar autenticar al usuario
+        UsuarioAutomatico = ModelUser.signin(db, Usuario)
+        
+        if UsuarioAutomatico is not None:
+            # Verificar que la contraseña sea correcta
+            if check_password_hash(UsuarioAutomatico.clave, request.form['clave']):
+                # Loguear al usuario
+                login_user(UsuarioAutomatico)
+                
+                # Guardar información en la sesión
+                session["nombreU"] = UsuarioAutomatico.nombre
+                session["perfilU"] = UsuarioAutomatico.perfil
+                
+                # Si el perfil es 'A', redirigir a admin, de lo contrario, a user
+                if UsuarioAutomatico.perfil == 'A':
+                    return redirect(url_for('admin'))
+                else:
+                    # Lógica para usuarios con perfil 'U' (usuario común)
+                    selArt = db.connection.cursor()
+                    selArt.execute("SELECT SUM(cantidad) AS TotalA FROM carrito WHERE idcliente = %s AND idventa IS NULL", [UsuarioAutomatico.id])
+                    a = selArt.fetchone()
+                    session['carrito'] = int(a[0] or 0)
+                    selCarrito = db.connection.cursor()
+                    selCarrito.execute("SELECT * FROM carrito")
+                    p = selCarrito.fetchall()
+                    return render_template('user.html', Productos=p, TotalA=a)
+            else:
+                flash('Contraseña incorrecta')
+                return redirect(request.url)
+        else:
+            flash('Usuario no encontrado')
+            return redirect(request.url)
+    
+    return render_template('signin.html')
 
-@hope.router('/uUsuario', methods=('GET', 'POST'))
+
+@hope.route('/signout', methods=['GET', 'POST'])
+def signout():
+    logout_user()
+    return render_template('signin.html')
+
+    if request.method == 'POST':
+        # Obtener los valores del formulario
+        nombre = request.form['nombre']
+        correo = request.form['correo']
+        clave = request.form['clave']
+        
+        # Cifrar la contraseña
+        clavecifrada = generate_password_hash(clave)
+        
+        # Obtener la fecha de registro
+        fechareg = datetime.now()
+        
+        # Insertar el usuario en la base de datos
+        UpUsuario = db.connection.cursor()
+        UpUsuario.execute(
+            "INSERT INTO usuario (nombre, correo, clave, fechareg, perfil) VALUES (%s, %s, %s, %s, %s)",
+            (nombre.upper(), correo, clavecifrada, fechareg, 'U')
+        )
+        db.connection.commit()
+        
+        # Enviar un correo de bienvenida
+        mensaje = Message(subject='Bienvenido a hope', recipients=[correo])
+        mensaje.html = render_template('mail.html', nombre=nombre)
+        mail.send(mensaje)
+        
+        return render_template('home.html')
+    else:
+        return render_template('signup.html')
+
+@hope.route('/uUsuario/<int:id>', methods=['GET', 'POST'])
 def uUsuario(id):
-      nombre=request.form['nombre']
-      correo=request.form['correo']
-      perfil=request.form['perfil']
-      actuUsuario = db.connection.cursor()
-      actuUsuario.execute("UPDATE usuario SET nombre=%s, correo=%s, perfil=%s WERE id=%s",())
+    if request.method == 'POST':
+        # Obtener los valores del formulario
+        nombre = request.form['nombre']
+        correo = request.form['correo']
+        perfil = request.form['perfil']
+        
+        # Actualizar usuario en la base de datos
+        actuUsuario = db.connection.cursor()
+        actuUsuario.execute(
+            "UPDATE usuario SET nombre=%s, correo=%s, perfil=%s WHERE id=%s",
+            (nombre, correo, perfil, id)
+        )
+        db.connection.commit()
+        return redirect(url_for('admin'))  # Redirigir al admin después de la actualización
 
-@hope.route('/sProducto', metods=['GET' , 'POST'])
+@hope.route('/sProducto', methods=['GET', 'POST'])
 def sProducto():
-      selProducto = db.connection.cursor()
-      selproducto = execute("SELECT = FROM producto")
-      p = selproducto.fetchall
-      selproducto.close()
-      if session['perfilU'] == 'A'a
-            return render_template('producto.html', productos=p)
-      else:
-            return render_template('user.html', productos=p)
+    # Obtener productos desde la base de datos
+    selProducto = db.connection.cursor()
+    selProducto.execute("SELECT * FROM producto")
+    p = selProducto.fetchall()
+    selProducto.close()
+    
+    if session.get('perfilU') == 'A':
+        return render_template('producto.html', productos=p)
+    else:
+        return render_template('user.html', productos=p)
 
 if __name__ == "__main__":
       hope.run(debug=True,port=3300)
